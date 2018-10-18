@@ -1,31 +1,28 @@
 package us.ilite.robot.modules;
 
-import com.flybotix.hfr.codex.Codex;
-import us.ilite.common.types.drive.EDriveData;
-import us.ilite.common.types.sensor.EGyro;
-import us.ilite.robot.Data;
-import us.ilite.robot.hardware.DriveHardware;
+import com.ctre.phoenix.motorcontrol.ControlMode;
+import com.ctre.phoenix.motorcontrol.can.TalonSRX;
+import com.sun.javafx.tk.quantum.MasterTimer;
+import edu.wpi.first.wpilibj.Joystick;
 
-/**
- * Class for running all mDriveData train control operations from both autonomous and
- * driver-control
- */
 public class Drive extends Module {
 
-    private Codex<Double, EGyro> mImuData;
-    private Codex<Double, EDriveData> mDriveData;
-    private DriveHardware mDriveHardware = new DriveHardware();
+    private TalonSRX rightMaster = new TalonSRX(0);
+    private TalonSRX rightMiddle = new TalonSRX(0);
+    private TalonSRX rightBack =  new TalonSRX(0);
+    private TalonSRX leftMaster = new TalonSRX(0);
+    private TalonSRX leftMiddle = new TalonSRX(0);
+    private TalonSRX leftBack = new TalonSRX(0);
 
-    public Drive(Data data) {
-        this.mImuData = data.imu;
-        this.mDriveData = data.drive;
-    }
-
+    private Joystick leftStick = new Joystick(0);
+    private Joystick rightStick = new Joystick(1);
 
     @Override
     public void powerOnInit(double pNow) {
-        mDriveHardware.init();
-        mDriveHardware.zero();
+        leftBack.follow(leftMaster);
+        leftMiddle.follow(leftMaster);
+        rightBack.follow(rightMaster);
+        rightMiddle.follow(rightMaster);
     }
 
     @Override
@@ -35,8 +32,10 @@ public class Drive extends Module {
 
     @Override
     public void update(double pNow) {
-
-
+        double throttle = leftStick.getRawAxis(1);
+        double turn = rightStick.getRawAxis(4);
+        leftMaster.set( ControlMode.PercentOutput, throttle + turn );
+        rightMaster.set( ControlMode.PercentOutput, throttle - turn );
     }
 
     @Override
@@ -48,16 +47,4 @@ public class Drive extends Module {
     public void checkModule(double pNow) {
 
     }
-
 }
-
-
-
-
-
-
-
-
-
-
-
