@@ -2,38 +2,47 @@ package us.ilite.robot.modules;
 
 import com.ctre.phoenix.motorcontrol.ControlMode;
 import com.ctre.phoenix.motorcontrol.can.TalonSRX;
-import com.sun.javafx.tk.quantum.MasterTimer;
 import edu.wpi.first.wpilibj.Joystick;
 
 public class Drive extends Module {
 
-    private TalonSRX rightMaster = new TalonSRX(0);
-    private TalonSRX rightMiddle = new TalonSRX(0);
-    private TalonSRX rightBack =  new TalonSRX(0);
-    private TalonSRX leftMaster = new TalonSRX(0);
-    private TalonSRX leftMiddle = new TalonSRX(0);
-    private TalonSRX leftBack = new TalonSRX(0);
+    private TalonSRX rightMaster = new TalonSRX(7);
+    private TalonSRX rightMiddle = new TalonSRX(6);
+    private TalonSRX rightBack =  new TalonSRX(5);
+    private TalonSRX leftMaster = new TalonSRX(10);
+    private TalonSRX leftMiddle = new TalonSRX(11);
+    private TalonSRX leftBack = new TalonSRX(12);
 
-    private Joystick leftStick = new Joystick(0);
-    private Joystick rightStick = new Joystick(1);
+    private Joystick joystick = new Joystick(0);
 
     @Override
     public void powerOnInit(double pNow) {
-        leftBack.follow(leftMaster);
-        leftMiddle.follow(leftMaster);
-        rightBack.follow(rightMaster);
-        rightMiddle.follow(rightMaster);
+        
     }
 
     @Override
     public void modeInit(double pNow) {
+        leftBack.follow(leftMaster);
+        leftMiddle.follow(leftMaster);
+        rightBack.follow(rightMaster);
+        rightMiddle.follow(rightMaster);
 
+        leftMaster.setInverted(false);
+        leftMiddle.setInverted(false);
+        leftBack.setInverted(false);
+
+        rightMaster.setInverted(true);
+        rightMiddle.setInverted(true);
+        rightBack.setInverted(true);
+
+        rightMaster.configOpenLoopRamp(0.1, 50);
+        leftMaster.configOpenLoopRamp(0.1, 50);
     }
 
     @Override
     public void update(double pNow) {
-        double throttle = leftStick.getRawAxis(1);
-        double turn = rightStick.getRawAxis(4);
+        double throttle = -joystick.getRawAxis(1);
+        double turn = joystick.getRawAxis(4);
         leftMaster.set( ControlMode.PercentOutput, throttle + turn );
         rightMaster.set( ControlMode.PercentOutput, throttle - turn );
     }

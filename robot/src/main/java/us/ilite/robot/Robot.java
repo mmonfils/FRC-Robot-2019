@@ -3,14 +3,14 @@ package us.ilite.robot;
 import com.flybotix.hfr.util.log.ELevel;
 import com.flybotix.hfr.util.log.ILog;
 import com.flybotix.hfr.util.log.Logger;
+
 import edu.wpi.first.wpilibj.IterativeRobot;
 import edu.wpi.first.wpilibj.Timer;
 import us.ilite.common.config.SystemSettings;
 import us.ilite.lib.drivers.Clock;
 import us.ilite.robot.commands.CommandQueue;
-import us.ilite.robot.loops.LoopList;
 import us.ilite.robot.loops.LoopManager;
-import us.ilite.robot.modules.ExampleModule;
+import us.ilite.robot.modules.Drive;
 import us.ilite.robot.modules.ModuleList;
 
 public class Robot extends IterativeRobot {
@@ -20,8 +20,8 @@ public class Robot extends IterativeRobot {
     private CommandQueue mCommandQueue = new CommandQueue();
 
     // Module declarations here
-    private ExampleModule mExampleModule = new ExampleModule();
-
+    private final Drive mDrive = new Drive();
+    
     // It sure would be convenient if we could reduce this to just a LoopManager...Will have to test timing of Codex first
     private LoopManager mLoopManager = new LoopManager(SystemSettings.CONTROL_LOOP_PERIOD);
     private ModuleList mRunningModules = new ModuleList();
@@ -59,7 +59,7 @@ public class Robot extends IterativeRobot {
     public void autonomousInit() {
         mapInputsAndCachedSensors();
 
-        mRunningModules.setModules(mExampleModule);
+        mRunningModules.setModules(mDrive);
         mRunningModules.modeInit(mClock.getCurrentTime());
 
         mLoopManager.start();
@@ -77,10 +77,10 @@ public class Robot extends IterativeRobot {
     public void teleopInit() {
         mapInputsAndCachedSensors();
 
-        mRunningModules.setModules(mExampleModule);
+        mRunningModules.setModules(mDrive);
         mRunningModules.modeInit(mClock.getCurrentTime());
 
-        mLoopManager.start();
+        // mLoopManager.start();
     }
 
     @Override
@@ -103,7 +103,7 @@ public class Robot extends IterativeRobot {
 
     @Override
     public void testInit() {
-        mRunningModules.setModules(mExampleModule);
+        mRunningModules.setModules(mDrive);
         mRunningModules.modeInit(mClock.getCurrentTime());
 
         mLoopManager.start();
